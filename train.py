@@ -21,16 +21,30 @@ random.seed(100)
 np.random.seed(100)
 torch.manual_seed(100)
 
-device      = 'cuda'
-epochs      = 120
-batch_size  = 8
-accum_iter  = 8
-emb_size    = 2048
-model_type  = 'cnn'
-images_dir  = '/data/research-data/humpback-whale/humpback-whale-identification' 
-lr          = 1e-3
-wd          = 1e-5
-eta_min     = 1e-7
+parser = argparse.ArgumentParser()
+parser.add_argument('--images-dir', type=str, required=True)
+parser.add_argument('--epochs', type=int, default=120)
+parser.add_argument('--grad-acc-size', type=int, default=8)
+parser.add_argument('--grad-acc-step', type=int, default=8)
+parser.add_argument('--emb-size', type=int, default=2048)
+parser.add_argument('--backbone', type=str, default='cnn')
+parser.add_argument('--lr', type=float, default=1e-3)
+parser.add_argument('--wd', type=float, default=1e-5)
+parser.add_argument('--eta-min', type=float, default=1e-7)
+args = parser.parse_args()
+
+device      = 'cuda' if torch.cuda.is_available() else 'cpu'
+images_dir  = args.images_dir
+epochs      = args.epochs
+batch_size  = args.grad_acc_size
+accum_iter  = args.grad_acc_step
+emb_size    = args.emb_size
+model_type  = args.backbone
+lr          = args.lr
+wd          = args.wd
+eta_min     = args.eta_min
+
+print(f'> running on {device}')
 
 augm = get_augmentation()
 load = get_data_loading(model_type)
