@@ -15,6 +15,7 @@ from humpback.dataset import HumpbackDataset
 from humpback.models import get_resnet, get_vit
 from humpback.loss import CosFaceLoss
 from humpback.metrics import evaluate_model
+from humpback.utils import unfreeze_module, freeze_module
 
 
 random.seed(100)
@@ -73,6 +74,8 @@ model.train()
 
 for epoch in range(epochs):
     
+    if (epoch + 1) == 50: unfreeze_module(model)
+         
     losses = []
     model.train()
     for i, (images, labels) in tqdm(enumerate(train_loader), total=len(train_loader)):

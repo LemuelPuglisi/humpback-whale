@@ -9,12 +9,12 @@ def get_resnet(embedding_size=2048):
     model.fc = nn.Linear(in_features=2048, out_features=embedding_size)    
     freeze_module(model)
     unfreeze_module(model.fc)
-    unfreeze_module(model.layer4)
-    unfreeze_module(model.layer3)
     return model
     
 
 def get_vit(embedding_size=2048):
     model = models.vit_b_16(weights=models.ViT_B_16_Weights.IMAGENET1K_SWAG_E2E_V1)
     model.heads = nn.Linear(in_features=768, out_features=embedding_size) # type: ignore
+    freeze_module(model)
+    unfreeze_module(model.heads)
     return model
